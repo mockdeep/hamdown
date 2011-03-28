@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+# Usage: hamdown <file>
+# Convert a file from markdown to html wrapped in a haml layout
+
+require 'hamdown'
