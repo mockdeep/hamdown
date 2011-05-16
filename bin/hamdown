@@ -3,3 +3,9 @@
 # Convert a file from markdown to html wrapped in a haml layout
 
 require 'hamdown'
+
+options = {}
+options[:file_path] = ARGV[0] if ARGV[0]
+
+hdown = Hamdown.new(options)
+puts hdown.to_html
