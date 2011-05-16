@@ -10,7 +10,7 @@ class Hamdown
   end
 
   def to_html
-    puts Haml::Engine.new(@outerfile.read).render { @innerfile.to_html }
+    Haml::Engine.new(@outerfile.read).render { @innerfile.to_html }
   end
 
 end
