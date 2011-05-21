@@ -3,9 +3,12 @@
 # Convert a file from markdown to html wrapped in a haml layout
 
 require 'hamdown'
+require 'trollop'
 
-options = {}
-options[:file_path] = ARGV[0] if ARGV[0]
+options = Trollop::options do
+  opt :file_path, "File path", :type => :string
+  opt :columns, "Output in columns"
+end
 
 hdown = Hamdown.new(options)
 puts hdown.to_html
