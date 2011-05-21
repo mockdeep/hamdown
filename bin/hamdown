@@ -11,4 +11,4 @@ options = Trollop::options do
 end
 
 hdown = Hamdown.new(options)
-puts hdown.to_html
+puts hdown.to_html(options)
