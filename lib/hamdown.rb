@@ -6,11 +6,12 @@ class Hamdown
   def initialize(options={})
     file = options.delete(:file_path) { raise "you need to specify a file name" }
     @innerfile = File.open(file).read
-    @outerfile = File.open('layout.haml')
+    @outerfile = File.open('layout.haml').read
   end
 
   def to_html(options={})
     columns = options.delete(:columns) { false }
+    timestamp
     if columns
       first_half = ""
       second_half = ""
@@ -34,7 +35,22 @@ class Hamdown
     else
       html = RDiscount.new(@innerfile).to_html
     end
-    Haml::Engine.new(@outerfile.read).render { html }
+    Haml::Engine.new(@outerfile).render { html }
+  end
+
+  def timestamp
+    lines = ''
+    @innerfile.each do |line|
+      if line.match(/(\[:(.*):\])/)
+        if $2 == 'today'
+          line.gsub!($1, Time.now.strftime('%B %d, %Y'))
+        elsif $2 == 'tomorrow'
+          line.gsub!($1, (Time.now + (24*60*60)).strftime('%B %d, %Y'))
+        end
+      end
+      lines << line + '\n'
+    end
+    @innerfile = lines
   end
 
 end
