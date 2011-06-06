@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{hamdown}
-  s.version = "0.0.10"
+  s.version = "0.0.11"
   s.date = %q{2011-05-15}
   s.authors = ["Robert Fletcher"]
   s.email = %q{lobatifricha@gmail.com}

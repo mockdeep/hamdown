@@ -48,7 +48,7 @@ class Hamdown
           line.gsub!($1, (Time.now + (24*60*60)).strftime('%B %d, %Y'))
         end
       end
-      lines << line + '\n'
+      lines << line + "\n"
     end
     @innerfile = lines
   end
