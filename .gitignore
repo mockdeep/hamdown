@@ -1,2 +1,6 @@
 *.swp
 *.gem
+*.html
+*.haml
+*.css
+*.md

@@ -11,7 +11,9 @@ class Hamdown
 
   def to_html(options={})
     columns = options.delete(:columns) { false }
-    timestamp
+    timestamp = options.delete(:timestamp) { false }
+    padlines = options.delete(:padlines) { 0 }
+    @innerfile = insert_timestamps(@innerfile) if timestamp
     if columns
       first_half = ""
       second_half = ""
@@ -27,20 +29,23 @@ class Hamdown
           second_half << line
         end
       end
+      first_half = insert_padding(padlines, first_half)
+      second_half = insert_padding(padlines, second_half)
       html = "<table><tr><td>\n"
       html << RDiscount.new(first_half).to_html
       html << "</td>\n<td>\n"
       html << RDiscount.new(second_half).to_html
       html << "</td></tr></table>"
     else
+      @innerfile = insert_padding(padlines, @innerfile)
       html = RDiscount.new(@innerfile).to_html
     end
     @outerfile ? Haml::Engine.new(@outerfile).render { html } : html
   end
 
-  def timestamp
+  def insert_timestamps(source_lines)
     lines = ''
-    @innerfile.each do |line|
+    source_lines.each do |line|
       if line.match(/(\[:(.*):\])/)
         if $2 == 'today'
           line.gsub!($1, Time.now.strftime('%B %d, %Y'))
@@ -50,7 +55,13 @@ class Hamdown
       end
       lines << line
     end
-    @innerfile = lines
+    lines
   end
 
+  def insert_padding(padlines, source_lines)
+    count = padlines - source_lines.lines.count
+    source_lines += "_" * 10
+    count.times { source_lines += "\n  \n  " + '\_' * 30 }
+    source_lines
+  end
 end
