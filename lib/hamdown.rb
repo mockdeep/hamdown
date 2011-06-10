@@ -47,9 +47,9 @@ class Hamdown
     lines = ''
     source_lines.each do |line|
       if line.match(/(\[:(.*):\])/)
-        if $2 == 'today'
+        if $2 == 'today' || ($2 == 'dynamic' && Time.now.hour <= 12)
           line.gsub!($1, Time.now.strftime('%B %d, %Y'))
-        elsif $2 == 'tomorrow'
+        elsif $2 == 'tomorrow' || ($2 == 'dynamic' && Time.now.hour > 12)
           line.gsub!($1, (Time.now + (24*60*60)).strftime('%B %d, %Y'))
         end
       end
