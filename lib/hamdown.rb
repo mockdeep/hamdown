@@ -6,7 +6,7 @@ class Hamdown
   def initialize(options={})
     file = options.delete(:file_path) { raise "you need to specify a file name" }
     @innerfile = File.open(file).read
-    @outerfile = File.open('layout.haml').read
+    @outerfile = File.exists?('layout.haml') ? File.open('layout.haml').read : nil
   end
 
   def to_html(options={})
@@ -35,7 +35,7 @@ class Hamdown
     else
       html = RDiscount.new(@innerfile).to_html
     end
-    Haml::Engine.new(@outerfile).render { html }
+    @outerfile ? Haml::Engine.new(@outerfile).render { html } : html
   end
 
   def timestamp
