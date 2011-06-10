@@ -8,6 +8,8 @@ require 'trollop'
 options = Trollop::options do
   opt :file_path, "File path", :type => :string
   opt :columns, "Output in columns"
+  opt :timestamp, "Replace timestamp symbols"
+  opt :padlines, "Number of lines to fill with blanks"
 end
 
 hdown = Hamdown.new(options)
