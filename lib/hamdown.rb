@@ -11,9 +11,9 @@ class Hamdown
 
   def to_html(options={})
     columns = options.delete(:columns) { false }
-    timestamp = options.delete(:timestamp) { false }
+    tag = options.delete(:tag) { false }
     padlines = options.delete(:padlines) { 0 }
-    @innerfile = insert_timestamps(@innerfile) if timestamp
+    @innerfile = insert_tags(@innerfile) if tag
     if columns
       first_half = ""
       second_half = ""
@@ -43,15 +43,20 @@ class Hamdown
     @outerfile ? Haml::Engine.new(@outerfile).render { html } : html
   end
 
-  def insert_timestamps(source_lines)
+  def insert_tags(source_lines)
     lines = ''
     source_lines.each do |line|
-      if line.match(/(\[:(.*):\])/)
-        if $2 == 'today' || ($2 == 'dynamic' && Time.now.hour <= 12)
-          line.gsub!($1, Time.now.strftime('%B %d, %Y'))
-        elsif $2 == 'tomorrow' || ($2 == 'dynamic' && Time.now.hour > 12)
-          line.gsub!($1, (Time.now + (24*60*60)).strftime('%B %d, %Y'))
+      if line.match(/(\[:([a-zA-Z]+)(\+([1-9]+))?:\])/)
+        case $2
+        when 'dynamic'
+          hours = $4 ? $4.to_i : 12
+          time = Time.now.hour <= hours ? Time.now : Time.now + (24*60*60)
+        when 'today'
+          time = Time.now
+        when 'tomorrow'
+          time = Time.now + (24*60*60)
         end
+        line.gsub!($1, time.strftime('%B %d, %Y'))
       end
       lines << line
     end
